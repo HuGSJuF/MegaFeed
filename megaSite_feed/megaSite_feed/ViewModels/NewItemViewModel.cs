@@ -1,8 +1,5 @@
 ﻿using megaSite_feed.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace megaSite_feed.ViewModels
@@ -49,11 +46,10 @@ namespace megaSite_feed.ViewModels
 
         private async void OnSave()
         {
-            Item newItem = new Item()
+            News newItem = new News()
             {
-                Id = Guid.NewGuid().ToString(),
-                Text = Text,
-                Description = Description
+                Headline = Text,
+                Url = Description
             };
 
             await DataStore.AddItemAsync(newItem);

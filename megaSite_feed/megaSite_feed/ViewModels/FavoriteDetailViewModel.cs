@@ -8,14 +8,13 @@ using Xamarin.Forms;
 namespace megaSite_feed.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class ItemDetailViewModel : BaseViewModel
+    class FavoriteDetailViewModel : BaseViewModel
     {
-        public Command AddItemCommand { get; }
-        public ItemDetailViewModel()
+        public Command DeleteItemCommand { get; }
+        public FavoriteDetailViewModel()
         {
-            AddItemCommand = new Command(AddFavorite);
+            DeleteItemCommand = new Command(DeleteFavorite);
         }
-
         private ICommand _tapCommand;
 
         private int itemId;
@@ -91,8 +90,7 @@ namespace megaSite_feed.ViewModels
         }
 
         [Obsolete]
-        public ICommand TapCommand =>
-            _tapCommand ?? (_tapCommand = new Command<string>(OpenUrl));
+        public ICommand TapCommand =>  _tapCommand ?? (_tapCommand = new Command<string>(OpenUrl));
 
         [Obsolete]
         void OpenUrl(string url)
@@ -122,7 +120,7 @@ namespace megaSite_feed.ViewModels
             }
         }
 
-        public async void AddFavorite(object obj)
+        public async void DeleteFavorite(object obj)
         {
             News item = new News();
             item.Headline = Headline;
@@ -139,15 +137,15 @@ namespace megaSite_feed.ViewModels
 
             Database database = new Database();
             var itemDataExist = database.getItem(item.Id);
-            if (itemDataExist != null)
+            if (itemDataExist == null)
             {
-                await Application.Current.MainPage.DisplayAlert("Atenção", "Este item já foi adicionado aos seus favoritos!", "OK");
-                await Shell.Current.GoToAsync("//ItemsPage");
+                await Application.Current.MainPage.DisplayAlert("Erro", "Não foi possível excluir o item dos favoritos!", "OK");
                 return;
             }
+            database.DeleteItem(item);
+            await Application.Current.MainPage.DisplayAlert("", "O item foi excluido dos seu favoritos!", "OK");
+            await Shell.Current.GoToAsync("//FavoritesPage");
 
-            database.addNewItem(item);
-            await Application.Current.MainPage.DisplayAlert("Parabéns", "Notícia adicionada aos favoritos!", "OK");
         }
     }
 }

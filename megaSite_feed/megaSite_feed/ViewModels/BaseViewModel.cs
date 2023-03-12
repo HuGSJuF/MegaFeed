@@ -10,7 +10,9 @@ namespace megaSite_feed.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
+        public IDataWeb<News> DataStore => DependencyService.Get<IDataWeb<News>>();
+        public const string BaseUrl = "https://www.vagalume.com.br";
+        public const string UrlNews = "/news/index.js";
 
         bool isBusy = false;
         public bool IsBusy

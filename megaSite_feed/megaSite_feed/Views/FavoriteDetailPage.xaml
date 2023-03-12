@@ -1,22 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="megaSite_feed.Views.ItemDetailPage"
-             xmlns:local="clr-namespace:megaSite_feed.ViewModels"
-             x:DataType="local:ItemDetailViewModel"
-             Title="{Binding Title}">
-
+             x:Class="megaSite_feed.Views.FavoriteDetailPage"
+             xmlns:local="clr-namespace:megaSite_feed.ViewModels" 
+             x:DataType="local:FavoriteDetailViewModel">
     <ContentPage.ToolbarItems>
 
-        <ToolbarItem Text="Adiconar Favoritos" IconImageSource="like.png"   
-                      Command="{Binding AddItemCommand}"
+        <ToolbarItem Text="Adiconar Favoritos" IconImageSource="delete.png"   
+                      Command="{Binding DeleteItemCommand}"
                      CommandParameter="{Binding .}" />
     </ContentPage.ToolbarItems>
 
     <StackLayout Spacing="20" Padding="15">
         <Label Text="{Binding Headline}" HorizontalTextAlignment="Center" FontSize="16" TextColor="#000"/>
         <Image Source="{Binding Pic_src} " WidthRequest="{Binding Pic_width}" HeightRequest="{Binding Pic_height}"></Image>
-        <Label Text="{Binding Inserted}" HorizontalTextAlignment="Center" FontSize="10"  TextColor="#121212"/>
+        <Label Text="{Binding Inserted}" HorizontalTextAlignment="Center" FontSize="10" TextColor="#121212"/>
         <Label Text="{Binding Kicker}" HorizontalTextAlignment="Center" FontSize="14" TextColor="#121212"/>
         <Label Text="Ver Reportagem"  HorizontalTextAlignment="Center" FontSize="14" TextColor="Blue">
             <Label.GestureRecognizers>
@@ -26,6 +24,5 @@
             </Label.GestureRecognizers>
         </Label>
     </StackLayout>
-
 
 </ContentPage>

@@ -10,7 +10,7 @@ namespace megaSite_feed.Views
 {
     public partial class NewItemPage : ContentPage
     {
-        public Item Item { get; set; }
+        public News News { get; set; }
 
         public NewItemPage()
         {

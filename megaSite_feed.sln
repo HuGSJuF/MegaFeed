@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "megaSite_feed.Android", "me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "megaSite_feed.iOS", "megaSite_feed\megaSite_feed.iOS\megaSite_feed.iOS.csproj", "{E98E7EDE-C50E-4CF9-B9BD-97C737B8F36D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "megaSite_feed", "megaSite_feed\megaSite_feed\megaSite_feed.csproj", "{0614E309-82D5-4508-BCC1-231916B078E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "megaSite_feed", "megaSite_feed\megaSite_feed\megaSite_feed.csproj", "{0614E309-82D5-4508-BCC1-231916B078E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

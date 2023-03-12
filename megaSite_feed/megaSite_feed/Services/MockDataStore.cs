@@ -1,60 +1,78 @@
 ﻿using megaSite_feed.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace megaSite_feed.Services
 {
-    public class MockDataStore : IDataStore<Item>
+    public class MockDataStore : IDataWeb<News>
     {
-        readonly List<Item> items;
+        readonly List<News> newsItems;
+        private const string BaseUrl = "https://www.vagalume.com.br";
+        private const string UrlNews = "/news/index.js";
+        private readonly HttpClient _client = new HttpClient();
 
         public MockDataStore()
         {
-            items = new List<Item>()
+            newsItems = new List<News>();
+
+            string content = _client.GetStringAsync(BaseUrl + UrlNews).Result;
+            NewsConvert posts = JsonConvert.DeserializeObject<NewsConvert>(content);
+            List<NewConvert> itemsRest = posts.News;
+            foreach (var item in itemsRest)
             {
-                new Item { Id = Guid.NewGuid().ToString(), Text = "First item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Second item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fourth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fifth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description="This is an item description." }
-            };
+                newsItems.Add(new News()
+                {
+                    Id = item.Id,
+                    Headline = item.Headline,
+                    Kicker = item.Kicker,
+                    Inserted = item.Inserted,
+                    Modified = item.Modified,
+                    Pic_src = BaseUrl + item.Pic_src,
+                    Pic_caption = item.Pic_caption,
+                    Pic_height = item.Pic_height,
+                    Pic_width = item.Pic_width,
+                    Url = item.Url
+                });
+            }
+
         }
 
-        public async Task<bool> AddItemAsync(Item item)
+        public async Task<bool> AddItemAsync(News item)
         {
-            items.Add(item);
+            newsItems.Add(item);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> UpdateItemAsync(Item item)
+        public async Task<bool> UpdateItemAsync(News item)
         {
-            var oldItem = items.Where((Item arg) => arg.Id == item.Id).FirstOrDefault();
-            items.Remove(oldItem);
-            items.Add(item);
+            var oldItem = newsItems.Where((News arg) => arg.Id == item.Id).FirstOrDefault();
+            newsItems.Remove(oldItem);
+            newsItems.Add(item);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> DeleteItemAsync(string id)
+        public async Task<bool> DeleteItemAsync(int id)
         {
-            var oldItem = items.Where((Item arg) => arg.Id == id).FirstOrDefault();
-            items.Remove(oldItem);
+            var oldItem = newsItems.Where((News arg) => arg.Id == id).FirstOrDefault();
+            newsItems.Remove(oldItem);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<Item> GetItemAsync(string id)
+        public async Task<News> GetItemAsync(int id)
         {
-            return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
+            return await Task.FromResult(newsItems.FirstOrDefault(s => s.Id == id));
         }
 
-        public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
+        public async Task<IEnumerable<News>> GetItemsAsync(bool forceRefresh = false)
         {
-            return await Task.FromResult(items);
+            return await Task.FromResult(newsItems);
         }
     }
 }

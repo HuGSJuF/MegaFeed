@@ -1,8 +1,11 @@
 ﻿using megaSite_feed.Models;
 using megaSite_feed.Views;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -10,20 +13,21 @@ namespace megaSite_feed.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private Item _selectedItem;
+        private News _selectedItem;
+        private readonly HttpClient _client = new HttpClient();
 
-        public ObservableCollection<Item> Items { get; }
+        public ObservableCollection<News> NewsItems { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
-        public Command<Item> ItemTapped { get; }
+        public Command<News> ItemTapped { get; }
 
         public ItemsViewModel()
         {
-            Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            Title = "Notícias";
+            NewsItems = new ObservableCollection<News>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            ItemTapped = new Command<Item>(OnItemSelected);
+            ItemTapped = new Command<News>(OnItemSelected);
 
             AddItemCommand = new Command(OnAddItem);
         }
@@ -34,12 +38,27 @@ namespace megaSite_feed.ViewModels
 
             try
             {
-                Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
+                NewsItems.Clear();
+                string content = _client.GetStringAsync(BaseUrl + UrlNews).Result;
+                NewsConvert news = JsonConvert.DeserializeObject<NewsConvert>(content);
+                List<NewConvert> items = news.News;
                 foreach (var item in items)
                 {
-                    Items.Add(item);
+                    NewsItems.Add(new News()
+                    {
+                        Id = item.Id,
+                        Headline = item.Headline,
+                        Kicker = item.Kicker,
+                        Inserted = item.Inserted,
+                        Modified = item.Modified,
+                        Pic_src = BaseUrl + item.Pic_src,
+                        Pic_caption = item.Pic_caption,
+                        Pic_height = item.Pic_height,
+                        Pic_width = item.Pic_width,
+                        Url = item.Url
+                    });
                 }
+
             }
             catch (Exception ex)
             {
@@ -57,7 +76,7 @@ namespace megaSite_feed.ViewModels
             SelectedItem = null;
         }
 
-        public Item SelectedItem
+        public News SelectedItem
         {
             get => _selectedItem;
             set
@@ -72,13 +91,13 @@ namespace megaSite_feed.ViewModels
             await Shell.Current.GoToAsync(nameof(NewItemPage));
         }
 
-        async void OnItemSelected(Item item)
+        async void OnItemSelected(News News)
         {
-            if (item == null)
+            if (News == null)
                 return;
 
             // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={News.Id}");
         }
     }
 }
